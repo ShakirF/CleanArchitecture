@@ -26,7 +26,7 @@ if (app.Environment.IsDevelopment())
     using (var scope = app.Services.CreateScope())
     {
         var initilazer = scope.ServiceProvider.GetRequiredService<ApplicationDbContextInitalizer>();
-        await initilazer 4
+        await initilazer
     }
 }
 
