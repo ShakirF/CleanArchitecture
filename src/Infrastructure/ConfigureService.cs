@@ -1,4 +1,5 @@
 ﻿using CleanArchitecture.Application.Common.Interfaces;
+using CleanArchitecture.Domain.Entitises;
 using CleanArchitecture.Infrastructure.Identity;
 using CleanArchitecture.Infrastructure.Persistence;
 using Microsoft.AspNetCore.Identity;
@@ -22,6 +23,7 @@ namespace CleanArchitecture.Infrastructure;
         options => options.UseSqlServer(configuration.GetConnectionString("local"), 
         builder => builder.MigrationsAssembly(typeof(ApplicationDbContext).Assembly.FullName)));
         services.AddScoped<IApplicationDbContext>(provider => provider.GetRequiredService<ApplicationDbContext>());
+        services.AddScoped<ApplicationDbContextInitalizer>();
         return services;
     }
     }
@@ -62,7 +64,25 @@ public class ApplicationDbContextInitalizer
             await _roleManager.CreateAsync(administratorRole);
         }
 
-        var administrator = new ApplicationUser { UserName = "shakirfarajullayev@gmail.com",Email = ""shakirfarajullayev@gmail.com""}
+        var administrator = new ApplicationUser { UserName = "shakirfarajullayev@gmail.com", Email = "shakirfarajullayev@gmail.com" };
+        if(_userManager.Users.All(u=>u.UserName != administrator.UserName))
+        {
+            await _userManager.CreateAsync(administrator, "administrator");
+            if (!string.IsNullOrWhiteSpace(administratorRole.Name))
+            {
+                await _userManager.AddToRolesAsync(administrator, new[] { administratorRole.Name });
+            }
+        }
+
+        if (!_context.Countries.Any())
+        {
+            await _context.Countries.AddRangeAsync(new List<Country>()
+            {
+                new Country {Name = "", PhoneAreaCode = ""}
+            });
+        }
+
+        await _context.SaveChangesAsync();
     }
 
 }

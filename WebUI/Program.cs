@@ -21,6 +21,13 @@ if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
+
+
+    using (var scope = app.Services.CreateScope())
+    {
+        var initilazer = scope.ServiceProvider.GetRequiredService<ApplicationDbContextInitalizer>();
+        await initilazer 4
+    }
 }
 
 app.UseAuthorization();
