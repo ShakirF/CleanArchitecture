@@ -1,0 +1,1 @@
+dotnet ef migrations add Initilaze_$(Get-Date -Format "ddMMyyyHHmmss") --project src\Infrastructure\ --startup-project WebUI --output-dir Migrations
